@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *todoTableView_iPad;
 @property (weak, nonatomic) IBOutlet UITableView *todoTableView_iPhone;
 
