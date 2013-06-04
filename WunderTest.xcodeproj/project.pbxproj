@@ -24,6 +24,7 @@
 		4102F543175CE8D600B4A754 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4102F51B175CE8D600B4A754 /* Foundation.framework */; };
 		4102F54B175CE8D600B4A754 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4102F549175CE8D600B4A754 /* InfoPlist.strings */; };
 		4102F54E175CE8D600B4A754 /* WunderTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4102F54D175CE8D600B4A754 /* WunderTestTests.m */; };
+		41E6799E175E397C0073CFD7 /* TodoVM.m in Sources */ = {isa = PBXBuildFile; fileRef = 41E6799D175E397C0073CFD7 /* TodoVM.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,8 @@
 		4102F54A175CE8D600B4A754 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4102F54C175CE8D600B4A754 /* WunderTestTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WunderTestTests.h; sourceTree = "<group>"; };
 		4102F54D175CE8D600B4A754 /* WunderTestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WunderTestTests.m; sourceTree = "<group>"; };
+		41E6799C175E397C0073CFD7 /* TodoVM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TodoVM.h; sourceTree = "<group>"; };
+		41E6799D175E397C0073CFD7 /* TodoVM.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TodoVM.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +92,7 @@
 		4102F50D175CE8D600B4A754 = {
 			isa = PBXGroup;
 			children = (
+				41E6799B175E2FEA0073CFD7 /* ViewModels */,
 				4102F51F175CE8D600B4A754 /* WunderTest */,
 				4102F546175CE8D600B4A754 /* WunderTestTests */,
 				4102F518175CE8D600B4A754 /* Frameworks */,
@@ -161,6 +165,15 @@
 				4102F549175CE8D600B4A754 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		41E6799B175E2FEA0073CFD7 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				41E6799C175E397C0073CFD7 /* TodoVM.h */,
+				41E6799D175E397C0073CFD7 /* TodoVM.m */,
+			);
+			name = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -277,6 +290,7 @@
 				4102F526175CE8D600B4A754 /* main.m in Sources */,
 				4102F52A175CE8D600B4A754 /* AppDelegate.m in Sources */,
 				4102F533175CE8D600B4A754 /* ViewController.m in Sources */,
+				41E6799E175E397C0073CFD7 /* TodoVM.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,6 +481,7 @@
 				4102F553175CE8D600B4A754 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4102F554175CE8D600B4A754 /* Build configuration list for PBXNativeTarget "WunderTestTests" */ = {
 			isa = XCConfigurationList;
@@ -475,6 +490,7 @@
 				4102F556175CE8D600B4A754 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
