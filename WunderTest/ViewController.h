@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WunderCellDelegate.h"
 
-@interface ViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
+@interface ViewController : UIViewController <UITableViewDataSource,UITableViewDelegate, WunderCellDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *todoTableView_iPad;
 @property (weak, nonatomic) IBOutlet UITableView *todoTableView_iPhone;
 

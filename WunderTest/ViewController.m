@@ -60,6 +60,63 @@
 }
 
 
+-(void)wunderItemDeleted:(id)todo{
+    float delay = 0.0;
+    
+    [_myTodos removeObject:todo];
+    
+    //NSUInteger index = [_myTodos indexOfObject:todo];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        NSArray *visibleTodos = [self.todoTableView_iPhone visibleCells];
+        UIView *lastTodo = [visibleTodos lastObject];
+        bool startAnimation = false;
+        for(WunderCell *cell in visibleTodos)
+        {
+            if(startAnimation){
+                [UIView animateWithDuration:0.3 delay:delay options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    cell.frame = CGRectOffset(cell.frame, 0.0f, -cell.frame.size.height);
+                } completion:^(BOOL finished){
+                    if(cell == lastTodo){
+                        [self.todoTableView_iPhone reloadData];
+                    }
+                }];
+                
+                delay+=0.03;
+            }
+            if(cell.todo == todo)
+            {
+                startAnimation = true;
+                cell.hidden = YES;
+            }
+        }
+    }
+    else{
+        NSArray *visibleTodos = [self.todoTableView_iPad visibleCells];
+        UIView *lastTodo = [visibleTodos lastObject];
+        bool startAnimation = false;
+        for(WunderCell *cell in visibleTodos)
+        {
+            if(startAnimation){
+                [UIView animateWithDuration:0.3 delay:delay options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                    cell.frame = CGRectOffset(cell.frame, 0.0f, -cell.frame.size.height);
+                } completion:^(BOOL finished){
+                    if(cell == lastTodo){
+                        [self.todoTableView_iPad reloadData];
+                    }
+                }];
+                delay+=0.03;
+            }
+            if(cell.todo == todo)
+            {
+                startAnimation = true;
+                cell.hidden = YES;
+            }
+        }
+
+    }
+    
+}
+
 #pragma mark - UITableViewDataSource
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return _myTodos.count;
@@ -72,8 +129,10 @@
     
     int index = [indexPath row];
     TodoVM *todo = _myTodos[index];
-    cell.textLabel.text = todo.title;
+    //cell.textLabel.text = todo.title;
     cell.textLabel.backgroundColor = [UIColor clearColor];
+    cell.delegate = self;
+    cell.todo = todo;
     return cell;
 }
 
@@ -83,7 +142,7 @@
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    cell.backgroundColor = [UIColor emerlandColor];
+    cell.backgroundColor = [UIColor sunflowerColor];
 }
 
 

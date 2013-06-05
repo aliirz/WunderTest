@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TodoVM.h"
+#import "WunderCellDelegate.h"
+
 
 @interface WunderCell : UITableViewCell
+
+@property (nonatomic) TodoVM *todo;
+@property (nonatomic, assign) id<WunderCellDelegate> delegate;
 
 @end

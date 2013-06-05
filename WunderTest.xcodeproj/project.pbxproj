@@ -28,6 +28,7 @@
 		41E679A0175E51570073CFD7 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E6799F175E51570073CFD7 /* CoreText.framework */; };
 		41E679A3175E58620073CFD7 /* WunderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 41E679A2175E58620073CFD7 /* WunderCell.m */; };
 		41E679A5175E58CB0073CFD7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E679A4175E58CB0073CFD7 /* QuartzCore.framework */; };
+		41E679A9175FA2170073CFD7 /* WunderTaskCompleteLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 41E679A8175FA2170073CFD7 /* WunderTaskCompleteLabel.m */; };
 		7E9999950EFD4308BDC5DD67 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF49943DAC6C4AD78F66A7CF /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,9 @@
 		41E679A1175E58620073CFD7 /* WunderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WunderCell.h; sourceTree = "<group>"; };
 		41E679A2175E58620073CFD7 /* WunderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WunderCell.m; sourceTree = "<group>"; };
 		41E679A4175E58CB0073CFD7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		41E679A6175F80EF0073CFD7 /* WunderCellDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WunderCellDelegate.h; sourceTree = "<group>"; };
+		41E679A7175FA2170073CFD7 /* WunderTaskCompleteLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WunderTaskCompleteLabel.h; sourceTree = "<group>"; };
+		41E679A8175FA2170073CFD7 /* WunderTaskCompleteLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WunderTaskCompleteLabel.m; sourceTree = "<group>"; };
 		4A5979EB109E4A26BE82E6EA /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		DF49943DAC6C4AD78F66A7CF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -149,6 +153,9 @@
 				4102F520175CE8D600B4A754 /* Supporting Files */,
 				41E679A1175E58620073CFD7 /* WunderCell.h */,
 				41E679A2175E58620073CFD7 /* WunderCell.m */,
+				41E679A6175F80EF0073CFD7 /* WunderCellDelegate.h */,
+				41E679A7175FA2170073CFD7 /* WunderTaskCompleteLabel.h */,
+				41E679A8175FA2170073CFD7 /* WunderTaskCompleteLabel.m */,
 			);
 			path = WunderTest;
 			sourceTree = "<group>";
@@ -342,6 +349,7 @@
 				4102F533175CE8D600B4A754 /* ViewController.m in Sources */,
 				41E6799E175E397C0073CFD7 /* TodoVM.m in Sources */,
 				41E679A3175E58620073CFD7 /* WunderCell.m in Sources */,
+				41E679A9175FA2170073CFD7 /* WunderTaskCompleteLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
