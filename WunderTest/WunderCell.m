@@ -43,6 +43,8 @@ const float LABEL_MARGIN_LFT = 15.0f;
         
         
         _completeLabel = [[WunderTaskCompleteLabel alloc]initWithFrame:CGRectNull];
+        _completeLabel.delegate = self;
+        _completeLabel.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         _completeLabel.textColor = [UIColor whiteColor];
         _completeLabel.font = [UIFont boldSystemFontOfSize:16];
         _completeLabel.backgroundColor  = [UIColor clearColor];
@@ -160,6 +162,24 @@ CGPoint translatoryPnt = [gestureRecognizer translationInView:[self superview]];
     label.font = [UIFont boldSystemFontOfSize:32.0];
     label.backgroundColor = [UIColor clearColor];
     return label;
+}
+
+#pragma mark - UITextFieldDelegate
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    // close the keyboard on enter
+    [textField resignFirstResponder];
+    return NO;
+}
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    [self.delegate cellDidBeginEditing:self];
+    return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField {
+    // set the model object state when an edit has complete
+    [self.delegate cellDidEndEditing:self];
+    self.todo.title = textField.text;
 }
 
 @end

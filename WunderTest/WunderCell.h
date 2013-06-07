@@ -9,11 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "TodoVM.h"
 #import "WunderCellDelegate.h"
+#import "WunderTaskCompleteLabel.h"
 
 
-@interface WunderCell : UITableViewCell
+@interface WunderCell : UITableViewCell <UITextFieldDelegate>
 
 @property (nonatomic) TodoVM *todo;
 @property (nonatomic, assign) id<WunderCellDelegate> delegate;
+@property (nonatomic, strong, readonly) WunderTaskCompleteLabel *label;
 
 @end

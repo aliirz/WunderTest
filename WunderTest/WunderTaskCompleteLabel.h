@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WunderTaskCompleteLabel : UILabel
+@interface WunderTaskCompleteLabel : UITextField
 
 @property (nonatomic) bool markComplete;
 

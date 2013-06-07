@@ -17,6 +17,8 @@
 
 @implementation ViewController{
     NSMutableArray* _myTodos;
+    float _editingOffset;
+    WunderTableViewNew *_addNew;
 }
 
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
@@ -29,6 +31,16 @@
         [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Inferno"]];
         [_myTodos addObject:[TodoVM getTodoWithTitle:@"Kick some ass"]];
         [_myTodos addObject:[TodoVM getTodoWithTitle:@"Play Tennis"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Tag a bag"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Show and tell"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Punch it"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Move to Berlin"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Ice Cubes"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Assignment"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Play Tennis"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Prepare Presentation"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Lunch with Mom"]];
+        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Watch Football"]];
     }
     return self;
 }
@@ -38,10 +50,9 @@
     [super viewDidLoad];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.todoTableView_iPhone.dataSource = self;
-        [self.todoTableView_iPhone registerClass:[WunderCell class] forCellReuseIdentifier:@"cell"];
-        self.todoTableView_iPhone.delegate = self;
-        self.todoTableView_iPhone.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.todoTableView_iPhone.backgroundColor = [UIColor cloudsColor];
+        [self.todoTableView_iPhone registerClassForCells:[WunderCell class]];
+        _addNew = [[WunderTableViewNew alloc]initWithTableView:self.todoTableView_iPhone];
     }
     else{
         self.todoTableView_iPad.dataSource = self;
@@ -117,23 +128,34 @@
     
 }
 
-#pragma mark - UITableViewDataSource
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+#pragma mark - WunderTableViewDataSource methods
+-(NSInteger)numberOfRows {
     return _myTodos.count;
 }
 
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSString *identifier = @"cell";
-    
-    WunderCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
-    
-    int index = [indexPath row];
-    TodoVM *todo = _myTodos[index];
-    //cell.textLabel.text = todo.title;
-    cell.textLabel.backgroundColor = [UIColor clearColor];
+-(UITableViewCell *)cellForRow:(NSInteger)row {
+    //NSString *ident = @"cell";
+    WunderCell *cell = (WunderCell *)[self.todoTableView_iPhone dequeueReusableCell];
+    TodoVM *item = _myTodos[row];
+    cell.todo = item;
     cell.delegate = self;
-    cell.todo = todo;
+    cell.backgroundColor = [UIColor sunflowerColor];
     return cell;
+}
+
+-(void)todoAdded{
+    TodoVM *newTodo = [[TodoVM alloc]init];
+    [_myTodos insertObject:newTodo atIndex:0];
+    [_todoTableView_iPhone reloadData];
+    WunderCell *nCell;
+    for(WunderCell * cell in _todoTableView_iPhone.visibleCells)
+    {
+        if(cell.todo == newTodo){
+            nCell = cell;
+            break;
+        }
+    }
+    [nCell.label becomeFirstResponder];
 }
 
 #pragma mark - UITableViewDataDelegate protocol
@@ -143,6 +165,34 @@
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     cell.backgroundColor = [UIColor sunflowerColor];
+}
+
+#pragma mark - WunderCellDelegate
+
+-(void)cellDidBeginEditing:(WunderCell *)editingCell {
+    _editingOffset = _todoTableView_iPhone.scrollView.contentOffset.y - editingCell.frame.origin.y;
+    for(WunderCell* cell in [_todoTableView_iPhone visibleCells]) {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             cell.frame = CGRectOffset(cell.frame, 0, _editingOffset);
+                             if (cell != editingCell) {
+                                 cell.alpha = 0.3;
+                             }
+                         }];
+    }
+}
+
+-(void)cellDidEndEditing:(WunderCell *)editingCell {
+    for(WunderCell* cell in [_todoTableView_iPhone visibleCells]) {
+        [UIView animateWithDuration:0.3
+                         animations:^{
+                             cell.frame = CGRectOffset(cell.frame, 0, -_editingOffset);
+                             if (cell != editingCell)
+                             {
+                                 cell.alpha = 1.0;
+                             }
+                         }];
+    }
 }
 
 
