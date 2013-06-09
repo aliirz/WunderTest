@@ -14,6 +14,9 @@
 #import "Todo.h"
 #import "FUIButton.h"
 #import "UIFont+FlatUI.h"
+#import "UINavigationBar+FlatUI.h"
+#import "UIColor+FlatUI.h"
+
 
 @interface ViewController ()
 
@@ -32,14 +35,6 @@
     if(self)
     {
         _myTodos    = [[NSMutableArray alloc]init];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Fix PS3 Hard Drive"]];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Pass Wundertest"]];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Inferno"]];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Kick some ass"]];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Play Tennis"]];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Tag a bag"]];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Show and tell"]];
-//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Punch it"]];
 //        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Move to Berlin" andCompleted:NO]];
 //        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Ice Cubes" andCompleted:NO]];
 //        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Assignment" andCompleted:NO]];
@@ -65,14 +60,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.addTaskButton.buttonColor = [UIColor turquoiseColor];
-    self.addTaskButton.shadowColor = [UIColor greenSeaColor];
-    self.addTaskButton.shadowHeight = 3.0f;
-    self.addTaskButton.cornerRadius = 6.0f;
-    self.addTaskButton.titleLabel.font = [UIFont boldFlatFontOfSize:16];
-    [self.addTaskButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
-    [self.addTaskButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
-    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"+"
+                                                                              style:UIBarButtonItemStylePlain target:self action:@selector(addNewTodo:)];
+    self.title = @"WunderTest";
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.todoTableView_iPhone.dataSource = self;
@@ -82,10 +72,9 @@
     }
     else{
         self.todoTableView_iPad.dataSource = self;
-        [self.todoTableView_iPad registerClass:[WunderCell class] forCellReuseIdentifier:@"cell"];
-        self.todoTableView_iPad.delegate = self;
-        self.todoTableView_iPad.separatorStyle = UITableViewCellSeparatorStyleNone;
         self.todoTableView_iPad.backgroundColor = [UIColor cloudsColor];
+        [self.todoTableView_iPad registerClassForCells:[WunderCell class]];
+        _addNew = [[WunderTableViewNew alloc]initWithTableView:self.todoTableView_iPad];
     }
 	// Do any additional setup after loading the view, typically from a nib.
 }
@@ -135,7 +124,7 @@
                 {
                     //if(t.title == cell.todo.title)
                    // {
-                    [managedObjectContext deleteObject:t];
+                        [managedObjectContext deleteObject:t];
                     //}
                     NSLog(@"Todo: %@", t.title);
                 }
@@ -179,7 +168,13 @@
 
 -(UITableViewCell *)cellForRow:(NSInteger)row {
     //NSString *ident = @"cell";
-    WunderCell *cell = (WunderCell *)[self.todoTableView_iPhone dequeueReusableCell];
+    WunderCell *cell;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone){
+        cell = (WunderCell *)[self.todoTableView_iPhone dequeueReusableCell];
+    }
+    else{
+        cell = (WunderCell *)[self.todoTableView_iPad dequeueReusableCell];
+    }
     TodoVM *item = _myTodos[row];
     cell.todo = item;
     cell.delegate = self;
@@ -188,10 +183,12 @@
 }
 
 -(void)todoAdded{
+    
     TodoVM *newTodo = [[TodoVM alloc]init];
     [_myTodos insertObject:newTodo atIndex:0];
-    [_todoTableView_iPhone reloadData];
     WunderCell *nCell;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    [_todoTableView_iPhone reloadData];
     for(WunderCell * cell in _todoTableView_iPhone.visibleCells)
     {
         if(cell.todo == newTodo){
@@ -199,7 +196,23 @@
             break;
         }
     }
+        
+    }
+    else{
+        [_todoTableView_iPad reloadData];
+        for(WunderCell *cell in _todoTableView_iPad.visibleCells)
+        {
+            if(cell.todo == newTodo){
+                nCell = cell;
+                break;
+            }
+        }
+    }
     [nCell.label becomeFirstResponder];
+}
+
+-(void)addNewTodo:(id)sender{
+    [self todoAdded];
 }
 
 #pragma mark - UITableViewDataDelegate protocol
@@ -214,6 +227,7 @@
 #pragma mark - WunderCellDelegate
 
 -(void)cellDidBeginEditing:(WunderCell *)editingCell {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
     _editingOffset = _todoTableView_iPhone.scrollView.contentOffset.y - editingCell.frame.origin.y;
     for(WunderCell* cell in [_todoTableView_iPhone visibleCells]) {
         [UIView animateWithDuration:0.3
@@ -224,20 +238,46 @@
                              }
                          }];
     }
-}
-
--(void)cellDidEndEditing:(WunderCell *)editingCell {
-    for(WunderCell* cell in [_todoTableView_iPhone visibleCells]) {
-        [UIView animateWithDuration:0.3
-                         animations:^{
-                             cell.frame = CGRectOffset(cell.frame, 0, -_editingOffset);
-                             if (cell != editingCell)
-                             {
-                                 cell.alpha = 1.0;
-                             }
-                         }];
+    }
+    else{
+        _editingOffset = _todoTableView_iPad.scrollView.contentOffset.y - editingCell.frame.origin.y;
+        for(WunderCell* cell in [_todoTableView_iPad visibleCells]) {
+            [UIView animateWithDuration:0.3
+                             animations:^{
+                                 cell.frame = CGRectOffset(cell.frame, 0, _editingOffset);
+                                 if (cell != editingCell) {
+                                     cell.alpha = 0.3;
+                                 }
+                             }];
+        }
     }
 }
 
+-(void)cellDidEndEditing:(WunderCell *)editingCell {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        for(WunderCell* cell in [_todoTableView_iPhone visibleCells]) {
+            [UIView animateWithDuration:0.3
+                             animations:^{
+                                 cell.frame = CGRectOffset(cell.frame, 0, -_editingOffset);
+                                 if (cell != editingCell)
+                                 {
+                                     cell.alpha = 1.0;
+                                 }
+                             }];
+        }
+    }
+    else{
+        for(WunderCell* cell in [_todoTableView_iPad visibleCells]) {
+            [UIView animateWithDuration:0.3
+                             animations:^{
+                                 cell.frame = CGRectOffset(cell.frame, 0, -_editingOffset);
+                                 if (cell != editingCell)
+                                 {
+                                     cell.alpha = 1.0;
+                                 }
+                             }];
+    }
+}
+}
 
 @end

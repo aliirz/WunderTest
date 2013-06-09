@@ -71,7 +71,7 @@ const float LABEL_MARGIN_LFT = 15.0f;
         [self.layer insertSublayer:_gradientLayer atIndex:0];
         
         _taskCompleteLayer = [CALayer layer];
-        _taskCompleteLayer.backgroundColor =  [[UIColor alizarinColor]CGColor]; //[[[UIColor alloc] initWithRed:0.0 green:0.6 blue:0.0 alpha:1.0] CGColor];
+        _taskCompleteLayer.backgroundColor =  [[UIColor turquoiseColor]CGColor]; //[[[UIColor alloc] initWithRed:0.0 green:0.6 blue:0.0 alpha:1.0] CGColor];
         _taskCompleteLayer.hidden = YES;
         [self.layer insertSublayer:_taskCompleteLayer atIndex:0];
         
@@ -234,9 +234,20 @@ CGPoint translatoryPnt = [gestureRecognizer translationInView:[self superview]];
     [fetchRequest setEntity:entity];
     NSError *error;
     NSArray *objs = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    for(Todo *t in objs)
+    if([objs count] != 0) //means its not a new object
     {
+        for(Todo *t in objs)
+        {
+            t.title = textField.text;
+        
+        }
+    }
+    else{
+        //Lets create a new todo then
+        Todo *t = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:managedObjectContext];
         t.title = textField.text;
+        t.completed = NO;       //definitely its a new todo its not completed
+        [managedObjectContext insertObject:t];
         
     }
     [managedObjectContext save:&error];

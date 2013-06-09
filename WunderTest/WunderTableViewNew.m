@@ -20,7 +20,7 @@
     self = [super init];
     if(self){
         _placeHolder = [[WunderCell alloc]init];
-        _placeHolder.backgroundColor = [UIColor greenSeaColor];
+        _placeHolder.backgroundColor = [UIColor pomegranateColor];
         _tableView = tableView;
         _tableView.delegate = self;
     }
@@ -39,7 +39,6 @@
     //[_tableView scrollViewDidScroll:scrollView];
     if(_pullDownInProgress && _tableView.scrollView.contentOffset.y <= 0.0f){
         _placeHolder.frame = CGRectMake(0, -_tableView.scrollView.contentOffset.y - SHC_ROW_HEIGHT, _tableView.frame.size.width,SHC_ROW_HEIGHT);
-        _placeHolder.label.text = -_tableView.scrollView.contentOffset.y > SHC_ROW_HEIGHT ? @"Let go to add" : @"Pull to add";
         _placeHolder.alpha = MIN(1.0f, -_tableView.scrollView.contentOffset.y/SHC_ROW_HEIGHT);
     }
     else{

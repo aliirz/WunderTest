@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import "Todo.h"
 #import "ViewController.h"
+#import "UINavigationBar+FlatUI.h"
+#import "UIColor+FlatUI.h"
+#import "UIBarButtonItem+FlatUI.h"
 
 
 @implementation AppDelegate
@@ -19,34 +22,29 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    UINavigationController *nav = [[UINavigationController alloc]init];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        
+        
         self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil];
+        [nav pushViewController:self.viewController animated:NO];
+        [nav.navigationBar configureFlatNavigationBarWithColor:[UIColor midnightBlueColor]];
+        [UIBarButtonItem configureFlatButtonsWithColor:[UIColor peterRiverColor]
+                                      highlightedColor:[UIColor belizeHoleColor]
+                                          cornerRadius:3];
         //self.viewController.managedObjectContext = [self managedObjectContext];
     } else {
         self.viewController = [[ViewController alloc] initWithNibName:@"ViewController_iPad" bundle:nil];
+        [nav pushViewController:self.viewController animated:NO];
+        [nav.navigationBar configureFlatNavigationBarWithColor:[UIColor midnightBlueColor]];
+        [UIBarButtonItem configureFlatButtonsWithColor:[UIColor peterRiverColor]
+                                      highlightedColor:[UIColor belizeHoleColor]
+                                          cornerRadius:3];
     }
-    
-//    NSManagedObjectContext *context = [self managedObjectContext];
-//    Todo *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:context];
-//    todo.title = @"World Domination";
-//    todo.completed = NO;
-//    NSError *error;
-//    if (![context save:&error]) {
-//        NSLog(@"Whoops, couldn't save: %@", [error localizedDescription]);
-//    }
-//    
-//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
-//    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Todo" inManagedObjectContext:context];
-//    [fetchRequest setEntity:entity];
-//    NSArray *objs = [context executeFetchRequest:fetchRequest error:&error];
-//    for(Todo  *t in objs)
-//    {
-//        NSLog(@"Todo: %@",t.title);
-//    }
-//    
-    self.window.rootViewController = self.viewController;
+      
+    self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     return YES;
 }
