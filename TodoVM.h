@@ -14,7 +14,7 @@
 @property (nonatomic) BOOL completed;
 
 
--(id)initWithTitle:(NSString *) title;
-+(id)getTodoWithTitle:(NSString *) title;
+-(id)initWithTitle:(NSString *) title andCompleted:(BOOL)completed;
++(id)getTodoWithTitle:(NSString *) title andCompleted:(BOOL)completed;
 
 @end

@@ -10,10 +10,14 @@
 #import "WunderTableView.h"
 #import "WunderTableViewNew.h"
 #import "WunderCellDelegate.h"
+#import "FUIButton.h"
+
 
 @interface ViewController : UIViewController <WunderTableViewDataSource, WunderCellDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *todoTableView_iPad;
 
 @property (weak, nonatomic) IBOutlet WunderTableView *todoTableView_iPhone;
+@property (nonatomic, strong) NSManagedObjectContext* managedObjectContext;
+@property (weak, nonatomic) IBOutlet FUIButton *addTaskButton;
 
 @end

@@ -10,6 +10,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIColor+FlatUI.h"
 #import "WunderTaskCompleteLabel.h"
+#import <CoreData/CoreData.h>
+#import "AppDelegate.h"
+#import "Todo.h"
 
 
 @implementation WunderCell{
@@ -24,6 +27,8 @@
 	UILabel *_deleteLabel;
 }
 
+@synthesize managedObjectContext;
+
 const float UI_CUES_MARGIN = 10.0f;
 const float UI_CUES_WIDTH = 50.0f;
 const float LABEL_MARGIN_LFT = 15.0f;
@@ -32,6 +37,9 @@ const float LABEL_MARGIN_LFT = 15.0f;
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        managedObjectContext = appDelegate.managedObjectContext;
         _tickLabel = [self createCueLabel];
         _tickLabel.text = @"\u2713";
         _tickLabel.textAlignment = NSTextAlignmentRight;
@@ -63,7 +71,7 @@ const float LABEL_MARGIN_LFT = 15.0f;
         [self.layer insertSublayer:_gradientLayer atIndex:0];
         
         _taskCompleteLayer = [CALayer layer];
-        _taskCompleteLayer.backgroundColor = [[[UIColor alloc] initWithRed:0.0 green:0.6 blue:0.0 alpha:1.0] CGColor];
+        _taskCompleteLayer.backgroundColor =  [[UIColor alizarinColor]CGColor]; //[[[UIColor alloc] initWithRed:0.0 green:0.6 blue:0.0 alpha:1.0] CGColor];
         _taskCompleteLayer.hidden = YES;
         [self.layer insertSublayer:_taskCompleteLayer atIndex:0];
         
@@ -138,11 +146,49 @@ CGPoint translatoryPnt = [gestureRecognizer translationInView:[self superview]];
         }
         if(_deleteOnDragRelease){
             [self.delegate wunderItemDeleted:self.todo];
+            
         }
         if(_markCompleteOnDragRelease){
-            self.todo.completed = YES;
-            _taskCompleteLayer.hidden  = NO;
-            _completeLabel.markComplete = YES;
+            if(self.todo.completed != YES)
+            {
+                self.todo.completed = YES;
+                _taskCompleteLayer.hidden  = NO;
+                _completeLabel.markComplete = YES;
+                //lets update coredata model as well
+                NSEntityDescription *entity = [NSEntityDescription entityForName:@"Todo" inManagedObjectContext:managedObjectContext];
+                NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
+                [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title == %@",self.todo.title]];
+                [fetchRequest setEntity:entity];
+                NSError *error;
+                NSArray *objs = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                for(Todo *t in objs)
+                {
+                    t.completed = [NSNumber numberWithBool:YES];
+                    
+                }
+                [managedObjectContext save:&error];
+
+            }
+            else
+            {
+                self.todo.completed = NO;
+                _taskCompleteLayer.hidden = YES;
+                _completeLabel.markComplete = NO;
+                //lets update coredata model as well
+                NSEntityDescription *entity = [NSEntityDescription entityForName:@"Todo" inManagedObjectContext:managedObjectContext];
+                NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
+                [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title == %@",self.todo.title]];
+                [fetchRequest setEntity:entity];
+                NSError *error;
+                NSArray *objs = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                for(Todo *t in objs)
+                {
+                    t.completed = [NSNumber numberWithBool:NO];
+                    
+                }
+                [managedObjectContext save:&error];
+            }
+            
         }
     }
 
@@ -153,6 +199,8 @@ CGPoint translatoryPnt = [gestureRecognizer translationInView:[self superview]];
     _completeLabel.text = todo.title;
     _completeLabel.markComplete = todo.completed;
     _taskCompleteLayer.hidden = !todo.completed;
+    //Lets update this todo in CoreData Model as well.
+    
     
 }
 
@@ -179,7 +227,22 @@ CGPoint translatoryPnt = [gestureRecognizer translationInView:[self superview]];
 -(void)textFieldDidEndEditing:(UITextField *)textField {
     // set the model object state when an edit has complete
     [self.delegate cellDidEndEditing:self];
+    //after editing is complete lets save the result to database as well.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Todo" inManagedObjectContext:managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title == %@",self.todo.title]];
+    [fetchRequest setEntity:entity];
+    NSError *error;
+    NSArray *objs = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    for(Todo *t in objs)
+    {
+        t.title = textField.text;
+        
+    }
+    [managedObjectContext save:&error];
     self.todo.title = textField.text;
+    
+    
 }
 
 @end

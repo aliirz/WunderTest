@@ -11,14 +11,15 @@
 @implementation TodoVM
 
 
--(id)initWithTitle:(NSString *) title{
+-(id)initWithTitle:(NSString *) title andCompleted:(BOOL)completed{
     if(self = [super init]){
         self.title = title;
+        self.completed = completed;
     }
     return  self;
 }
-+(id)getTodoWithTitle:(NSString *) title{
-    return [[TodoVM alloc]initWithTitle:title];
++(id)getTodoWithTitle:(NSString *) title andCompleted:(BOOL)completed{
+    return [[TodoVM alloc]initWithTitle:title andCompleted:completed];
 }
 
 @end

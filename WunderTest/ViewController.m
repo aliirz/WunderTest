@@ -10,6 +10,10 @@
 #import "TodoVM.h"
 #import "UIColor+FlatUI.h"
 #import "WunderCell.h"
+#import <CoreData/CoreData.h>
+#import "Todo.h"
+#import "FUIButton.h"
+#import "UIFont+FlatUI.h"
 
 @interface ViewController ()
 
@@ -20,27 +24,40 @@
     float _editingOffset;
     WunderTableViewNew *_addNew;
 }
+@synthesize managedObjectContext;
+
 
 -(id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil{
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if(self)
     {
         _myTodos    = [[NSMutableArray alloc]init];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Fix PS3 Hard Drive"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Pass Wundertest"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Inferno"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Kick some ass"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Play Tennis"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Tag a bag"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Show and tell"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Punch it"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Move to Berlin"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Ice Cubes"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Assignment"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Play Tennis"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Prepare Presentation"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Lunch with Mom"]];
-        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Watch Football"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Fix PS3 Hard Drive"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Pass Wundertest"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Inferno"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Kick some ass"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Play Tennis"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Tag a bag"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Show and tell"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Punch it"]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Move to Berlin" andCompleted:NO]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Ice Cubes" andCompleted:NO]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Finish Assignment" andCompleted:NO]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Play Tennis" andCompleted:NO]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Prepare Presentation" andCompleted:NO]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Lunch with Mom" andCompleted:NO]];
+//        [_myTodos addObject:[TodoVM getTodoWithTitle:@"Watch Football" andCompleted:NO]];
+        id delegate = [[UIApplication sharedApplication] delegate];
+        self.managedObjectContext = [delegate managedObjectContext];
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Todo" inManagedObjectContext:managedObjectContext];
+        [fetchRequest setEntity:entity];
+        NSError *error;
+        NSArray *todosFromDB = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        for(Todo *t in todosFromDB)
+        {
+            [_myTodos addObject:[TodoVM getTodoWithTitle:t.title andCompleted:[t.completed boolValue]]];
+        }
     }
     return self;
 }
@@ -48,6 +65,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.addTaskButton.buttonColor = [UIColor turquoiseColor];
+    self.addTaskButton.shadowColor = [UIColor greenSeaColor];
+    self.addTaskButton.shadowHeight = 3.0f;
+    self.addTaskButton.cornerRadius = 6.0f;
+    self.addTaskButton.titleLabel.font = [UIFont boldFlatFontOfSize:16];
+    [self.addTaskButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateNormal];
+    [self.addTaskButton setTitleColor:[UIColor cloudsColor] forState:UIControlStateHighlighted];
+    
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         self.todoTableView_iPhone.dataSource = self;
         self.todoTableView_iPhone.backgroundColor = [UIColor cloudsColor];
@@ -98,6 +124,24 @@
             {
                 startAnimation = true;
                 cell.hidden = YES;
+                //lets delete it from our coredata context as well.
+                NSEntityDescription *entity = [NSEntityDescription entityForName:@"Todo" inManagedObjectContext:managedObjectContext];
+                NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]init];
+                [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"title == %@",cell.todo.title]];
+                [fetchRequest setEntity:entity];
+                NSError *error;
+                NSArray *objs = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                for(Todo  *t in objs)
+                {
+                    //if(t.title == cell.todo.title)
+                   // {
+                    [managedObjectContext deleteObject:t];
+                    //}
+                    NSLog(@"Todo: %@", t.title);
+                }
+                [managedObjectContext save:&error];
+                
+                
             }
         }
     }

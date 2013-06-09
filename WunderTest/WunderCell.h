@@ -18,4 +18,6 @@
 @property (nonatomic, assign) id<WunderCellDelegate> delegate;
 @property (nonatomic, strong, readonly) WunderTaskCompleteLabel *label;
 
+@property (nonatomic, strong) NSManagedObjectContext* managedObjectContext;
+
 @end
